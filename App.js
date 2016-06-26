@@ -1,17 +1,30 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 class App extends React.Component {
 	constructor() {
 		super(); // gives context for "this" within our component
 		this.state = {
-			stateTxt: 'STATE TEXT'
+			stateTxt: 'DEFAULT TEXT',
+			red: 0,
+			green: 0,
+			blue: 0
 		}
-		this.update = this.update.bind(this)
+		this.updateColors = this.updateColors.bind(this)
+		this.updateText = this.updateText.bind(this)
 	}
 
-	update(event) {
+	updateText(event) {
 		this.setState({
 			stateTxt: event.target.value
+		})
+	}
+
+	updateColors(event) {
+		this.setState({
+			red: ReactDOM.findDOMNode(this.refs.red.refs.inp).value,
+			green: ReactDOM.findDOMNode(this.refs.green.refs.inp).value,
+			blue: ReactDOM.findDOMNode(this.refs.blue.refs.inp).value
 		})
 	}
 
@@ -24,7 +37,18 @@ class App extends React.Component {
         		<h2>And this is... {txtProvided}</h2>
         		<h3>... and this is... {this.props.txtDefault}</h3>
         		
-        		<Widget txt={this.state.stateTxt} update={this.update}/>	
+        		<Widget txt={this.state.stateTxt} update={this.updateText}/>
+        		<hr />
+        		
+        		{this.state.red}
+        		<br />
+        		<Slider ref="red" update={this.updateColors}/>
+        		{this.state.green}
+        		<br />
+        		<Slider ref="green" update={this.updateColors}/>
+        		{this.state.blue}
+        		<br />
+        		<Slider ref="blue" update={this.updateColors}/>	
         	</div>	
     	)
    
@@ -41,14 +65,29 @@ App.defaultProps = {
 	txtDefault: "default txt prop"
 }
 
-// stateless function component
+class Slider extends React.Component {
+    render() {
+        return (
+        	<div>
+        		<input ref="inp" type="range" 
+        			min="0"
+        			max="255"	
+        			onChange={this.props.update}/>
+        	</div>	
+		)
+    }
+}
+
+export default Slider;
+
+// stateless function component -- refs won't work with these!
 const Widget = (props) => {
 	return (
         	<div>
-        		<h1>... AND LAST BUT NOT LEAST, HERE'S OUR WIDGET TEXT: {props.txt}</h1>
+        		<h1>WIDGET: {props.txt}</h1>
         		<input type="text" onChange={props.update}/>
         	</div>	
-    	)
+	)
 }
 
 export default App
