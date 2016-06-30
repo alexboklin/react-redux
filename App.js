@@ -8,10 +8,12 @@ class App extends React.Component {
 			stateTxt: 'DEFAULT TEXT',
 			red: 0,
 			green: 0,
-			blue: 0
+			blue: 0,
+			buttonValue: 0
 		}
 		this.updateColors = this.updateColors.bind(this)
 		this.updateText = this.updateText.bind(this)
+		this.updateButtonValue = this.updateButtonValue.bind(this)
 	}
 
 	updateText(event) {
@@ -26,6 +28,14 @@ class App extends React.Component {
 			green: ReactDOM.findDOMNode(this.refs.green.refs.inp).value,
 			blue: ReactDOM.findDOMNode(this.refs.blue.refs.inp).value
 		})
+	}
+
+	updateButtonValue(event) {
+		this.setState({
+			buttonValue: this.state.buttonValue + 1
+			
+		})
+		// console.log(event)
 	}
 
     render() {
@@ -49,6 +59,9 @@ class App extends React.Component {
         		{this.state.blue}
         		<br />
         		<Slider ref="blue" update={this.updateColors}/>	
+
+        		<br />
+        		<Button value={this.state.buttonValue} update={this.updateButtonValue}/>
         	</div>	
     	)
    
@@ -62,7 +75,7 @@ App.propTypes = {
 }
 
 App.defaultProps = {
-	txtDefault: "default txt prop"
+	txtDefault: "default txt prop",
 }
 
 class Slider extends React.Component {
@@ -78,8 +91,6 @@ class Slider extends React.Component {
     }
 }
 
-export default Slider;
-
 // stateless function component -- refs won't work with these!
 const Widget = (props) => {
 	return (
@@ -88,6 +99,41 @@ const Widget = (props) => {
         		<input type="text" onChange={props.update}/>
         	</div>	
 	)
+}
+
+class Button extends React.Component {
+	constructor() {
+		super();
+		this.state = {
+			increasing: false
+		}
+		
+	}
+
+	componentWillReceiveProps(nextProps) {
+		this.setState({
+			increasing: nextProps.value > this.props.value
+		})
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		return nextProps.value % 3 === 0; 
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		console.log('prevProps', prevProps)
+		console.log('prevState', prevState)
+	}
+
+    render() {
+    	console.log(this.state.increasing)
+
+        return (
+        	<button onClick={this.props.update}>
+        		{this.props.value}        		
+        	</button>	
+		)
+    }
 }
 
 export default App
