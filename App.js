@@ -7,8 +7,14 @@ class App extends React.Component {
 		this.state = {
 			stateTxt: 'DEFAULT TEXT',
 			red: 0,
-
-			buttonValue: 0
+			buttonValue: 0,
+			data: [
+				{id: 1, name: "Ryan Gosling"},
+				{id: 2, name: "Jake Gyllenhaal"},
+				{id: 3, name: "Leonardo DiCaprio"},
+				{id: 4, name: "Bryan Cranston"},
+				{id: 5, name: "Bill Hader"}
+			]
 		}
 		this.updateColors = this.updateColors.bind(this)
 		this.updateText = this.updateText.bind(this)
@@ -38,6 +44,9 @@ class App extends React.Component {
 
     render() {
     	let txtProvided = this.props.txtProvided
+    	let rows = this.state.data.map( actor => {
+    		return <Actor key={actor.id} data={actor} />
+    	})
 
         return (
         	<div>
@@ -63,6 +72,12 @@ class App extends React.Component {
 
         		<br />
         		<Button value={this.state.buttonValue} update={this.updateButtonValue}/>
+
+				<br />
+				<table>
+					<tbody>{rows}</tbody>
+				</table>
+
         	</div>	
     	)
    
@@ -77,6 +92,13 @@ App.propTypes = {
 
 App.defaultProps = {
 	txtDefault: "default txt prop",
+}
+
+const Actor = (props) => {
+	return <tr> 
+		<td>{props.data.id}</td>
+		<td>{props.data.name}</td>
+	</tr>
 }
 
 class NumInput extends React.Component {
